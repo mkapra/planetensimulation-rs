@@ -1,8 +1,8 @@
 //! This module contains the field struct and the field types
+use colored::Colorize;
 use log::{debug, info};
 use rand::Rng;
 use std::fmt;
-use colored::Colorize;
 
 type Position = (u32, u32);
 
@@ -18,7 +18,10 @@ pub struct AnimalStatus {
 
 impl AnimalStatus {
     fn new_fish() -> Self {
-        AnimalStatus { life: None, breed_counter: FISH_BREED_TIME }
+        AnimalStatus {
+            life: None,
+            breed_counter: FISH_BREED_TIME,
+        }
     }
 
     fn new_shark() -> Self {
@@ -32,7 +35,6 @@ impl AnimalStatus {
     fn reduce_breet(&mut self) {
         self.breed_counter -= 1;
     }
-
 
     fn reduce_life(&mut self) {
         if let Some(life) = self.life {
@@ -133,7 +135,9 @@ impl Field {
     pub fn step(&self, animals: &Vec<Vec<Field>>) -> Option<(Position, Option<AnimalStatus>)> {
         match self.r#type {
             FieldType::Fish => Some(self.get_next_fish_position(animals)),
-            FieldType::Shark => self.get_next_shark_position(animals).map(|((x, y), state)| ((x, y), Some(state))),
+            FieldType::Shark => self
+                .get_next_shark_position(animals)
+                .map(|((x, y), state)| ((x, y), Some(state))),
             _ => Some(((self.x, self.y), None)),
         }
     }
@@ -176,7 +180,10 @@ impl Field {
         }
 
         new_status.reduce_breet();
-        debug!("Reduced breed counter for fish: {:?} old=({:?})", new_status, self.status);
+        debug!(
+            "Reduced breed counter for fish: {:?} old=({:?})",
+            new_status, self.status
+        );
 
         if possible_moves.is_empty() {
             return ((self.x, self.y), Some(new_status));
@@ -198,7 +205,10 @@ impl Field {
             new_status.reset_breed(&self.r#type);
         }
         new_status.reduce_breet();
-        debug!("Reduced breed counter for shark: {:?} old=({:?})", new_status.breed_counter, self.status);
+        debug!(
+            "Reduced breed counter for shark: {:?} old=({:?})",
+            new_status.breed_counter, self.status
+        );
 
         let mut prioritized_moves: Vec<Position> = vec![];
         let mut possible_moves: Vec<Position> = vec![];
@@ -255,7 +265,10 @@ impl Field {
                 "Shark ({}, {}) moves to prio field {:?}",
                 self.x, self.y, prioritized_moves[index]
             );
-            debug!("New status for shark ({}, {}): {:?} old({:?})", self.x, self.y, new_status, self.status);
+            debug!(
+                "New status for shark ({}, {}): {:?} old({:?})",
+                self.x, self.y, new_status, self.status
+            );
             return Some((prioritized_moves[index], new_status));
         }
 

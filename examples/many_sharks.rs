@@ -1,5 +1,5 @@
-use std::io::Write;
 use planetensimulation::Board;
+use std::io::Write;
 
 fn main() {
     env_logger::builder()

@@ -125,7 +125,8 @@ impl Board {
                     Field::new(FieldType::Plankton, old_x, old_y, None);
             }
             // Set new field to fish
-            self.fields[new_y as usize][new_x as usize] = Field::new(FieldType::Fish, new_x, new_y, status);
+            self.fields[new_y as usize][new_x as usize] =
+                Field::new(FieldType::Fish, new_x, new_y, status);
         }
 
         debug!("After fish moves:\n{}", self);
