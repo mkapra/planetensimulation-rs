@@ -53,28 +53,28 @@ impl Field {
             self.x % (animals.first().unwrap().len() as u32),
             ((self.y + (animals.len() as u32) - 1) % (animals.len() as u32)),
         );
-        if let FieldType::Plankton = animals[up.1 as usize][up.0 as usize].r#type {
+        if animals[up.1 as usize][up.0 as usize].check_field_empty() {
             possible_moves.push(up);
         }
         let down = (
             self.x % (animals.first().unwrap().len() as u32),
             ((self.y + (animals.len() as u32) + 1) % (animals.len() as u32)),
         );
-        if let FieldType::Plankton = animals[down.1 as usize][down.0 as usize].r#type {
+        if animals[down.1 as usize][down.0 as usize].check_field_empty() {
             possible_moves.push(down);
         }
         let left = (
             ((self.x + (animals.first().unwrap().len() as u32) - 1) % (animals.len() as u32)),
             self.y % (animals.len() as u32),
         );
-        if let FieldType::Plankton = animals[left.1 as usize][left.0 as usize].r#type {
+        if animals[left.1 as usize][left.0 as usize].check_field_empty() {
             possible_moves.push(left);
         }
         let right = (
             ((self.x + (animals.first().unwrap().len() as u32) + 1) % (animals.len() as u32)),
             self.y % (animals.len() as u32),
         );
-        if let FieldType::Plankton = animals[right.1 as usize][right.0 as usize].r#type {
+        if animals[right.1 as usize][right.0 as usize].check_field_empty() {
             possible_moves.push(right);
         }
 
@@ -90,6 +90,22 @@ impl Field {
             self.x, self.y, possible_moves[move_index].0, possible_moves[move_index].1
         );
         possible_moves[move_index]
+    }
+
+    /// Check if the field has a specific type
+    ///
+    /// # Arguments
+    /// * `type` - The type to check
+    ///
+    /// # Returns
+    /// `true` if the field has the type, `false` otherwise
+    fn check_field_for_type(&self, r#type: FieldType) -> bool {
+        self.r#type == r#type
+    }
+
+    //// Check if the field is empty
+    fn check_field_empty(&self) -> bool {
+        self.check_field_for_type(FieldType::Plankton)
     }
 
     fn get_next_shark_position(&self, animals: &[Vec<Field>]) -> Position {
@@ -114,29 +130,29 @@ impl Field {
         );
 
         // Check if there is a fish in the neighbour fields
-        if let FieldType::Fish = animals[up.1 as usize][up.0 as usize].r#type {
+        if animals[up.1 as usize][up.0 as usize].check_field_for_type(FieldType::Fish) {
             prioritized_moves.push(up);
         }
-        if let FieldType::Fish = animals[down.1 as usize][down.0 as usize].r#type {
+        if animals[down.1 as usize][down.0 as usize].check_field_for_type(FieldType::Fish) {
             prioritized_moves.push(down);
         }
-        if let FieldType::Fish = animals[left.1 as usize][left.0 as usize].r#type {
+        if animals[left.1 as usize][left.0 as usize].check_field_for_type(FieldType::Fish) {
             prioritized_moves.push(left);
         }
-        if let FieldType::Fish = animals[right.1 as usize][right.0 as usize].r#type {
+        if animals[right.1 as usize][right.0 as usize].check_field_for_type(FieldType::Fish) {
             prioritized_moves.push(right);
         }
         // Check for free fields around
-        if let FieldType::Plankton = animals[up.1 as usize][up.0 as usize].r#type {
+        if animals[up.1 as usize][up.0 as usize].check_field_empty() {
             possible_moves.push(up);
         }
-        if let FieldType::Plankton = animals[down.1 as usize][down.0 as usize].r#type {
+        if animals[down.1 as usize][down.0 as usize].check_field_empty() {
             possible_moves.push(down);
         }
-        if let FieldType::Plankton = animals[left.1 as usize][left.0 as usize].r#type {
+        if animals[left.1 as usize][left.0 as usize].check_field_empty() {
             possible_moves.push(left);
         }
-        if let FieldType::Plankton = animals[right.1 as usize][right.0 as usize].r#type {
+        if animals[right.1 as usize][right.0 as usize].check_field_empty() {
             possible_moves.push(right);
         }
 
