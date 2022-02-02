@@ -4,7 +4,6 @@ fn main() {
     let mut board = Board::new(10, 5, 5, 5);
     board.generate_random_animals();
 
-
     loop {
         if let Err(_) = board.step() {
             break;

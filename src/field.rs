@@ -156,7 +156,10 @@ impl Field {
 
         // select a random move from possible_moves
         let index = rand::thread_rng().gen_range(0..possible_moves.len());
-        debug!("Shark ({}, {}) moves to {:?}", self.x, self.y, possible_moves[index]);
+        debug!(
+            "Shark ({}, {}) moves to {:?}",
+            self.x, self.y, possible_moves[index]
+        );
         return possible_moves[index];
     }
 }

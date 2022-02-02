@@ -13,7 +13,10 @@ use colored::Colorize;
 use log::debug;
 use rand::Rng;
 
-use crate::{Result, field::{Field, FieldType}, SimulationError};
+use crate::{
+    field::{Field, FieldType},
+    Result, SimulationError,
+};
 
 /// Holds all the fields and information of the simulation
 #[derive(Debug, PartialEq, Eq)]
@@ -60,7 +63,7 @@ impl Board {
         for y in 0..self.rows {
             let mut animals_row = Vec::with_capacity(self.columns as usize);
             for x in 0..self.columns {
-                animals_row.push(Field::new(FieldType::Plankton ,x, y));
+                animals_row.push(Field::new(FieldType::Plankton, x, y));
             }
             animals.push(animals_row)
         }
@@ -87,11 +90,8 @@ impl Board {
                 random_row = rand_gen.gen_range(0..animals.len());
             }
 
-            animals[random_row][random_col] = Field::new(
-                FieldType::Shark,
-                random_col as u32,
-                random_row as u32,
-            );
+            animals[random_row][random_col] =
+                Field::new(FieldType::Shark, random_col as u32, random_row as u32);
         }
 
         debug!("Animals: {:?}", animals);
@@ -108,7 +108,9 @@ impl Board {
         let sharks = Self::get_sharks(&cloned_fields);
 
         if fishes.len() == 0 || sharks.len() == 0 {
-            return Err(SimulationError("No fishes or sharks left on the board".into()));
+            return Err(SimulationError(
+                "No fishes or sharks left on the board".into(),
+            ));
         }
 
         for fish in fishes {
@@ -116,17 +118,10 @@ impl Board {
             let (new_x, new_y) = fish.step(&self.fields);
 
             // Set old field to plankton
-            self.fields[old_y as usize][old_x as usize] = Field::new(
-                FieldType::Plankton,
-                old_x,
-                old_y,
-            );
+            self.fields[old_y as usize][old_x as usize] =
+                Field::new(FieldType::Plankton, old_x, old_y);
             // Set new field to fish
-            self.fields[new_y as usize][new_x as usize] = Field::new(
-                FieldType::Fish,
-                new_x,
-                new_y,
-            );
+            self.fields[new_y as usize][new_x as usize] = Field::new(FieldType::Fish, new_x, new_y);
         }
 
         for shark in sharks {
@@ -134,17 +129,11 @@ impl Board {
             let (new_x, new_y) = shark.step(&self.fields);
 
             // Set old field to plankton
-            self.fields[old_y as usize][old_x as usize] = Field::new(
-                FieldType::Plankton,
-                old_x,
-                old_y,
-            );
+            self.fields[old_y as usize][old_x as usize] =
+                Field::new(FieldType::Plankton, old_x, old_y);
             // Set new field to fish
-            self.fields[new_y as usize][new_x as usize] = Field::new(
-                FieldType::Shark,
-                new_x,
-                new_y,
-            );
+            self.fields[new_y as usize][new_x as usize] =
+                Field::new(FieldType::Shark, new_x, new_y);
         }
 
         Ok(())

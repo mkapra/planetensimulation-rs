@@ -1,5 +1,5 @@
-mod field;
 mod board;
+mod field;
 use std::fmt;
 
 pub use board::Board;
