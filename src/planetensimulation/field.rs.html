@@ -161,6 +161,9 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the field struct and the field types</span>
 <span class="kw">use</span> <span class="ident">log::debug</span>;
 <span class="kw">use</span> <span class="ident">rand::Rng</span>;
@@ -319,9 +322,13 @@
 
         <span class="comment">// select a random move from possible_moves</span>
         <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">rand::thread_rng</span>().<span class="ident">gen_range</span>(<span class="number">0</span>..<span class="ident">possible_moves</span>.<span class="ident">len</span>());
-        <span class="macro">debug!</span>(<span class="string">&quot;Shark ({}, {}) moves to {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">x</span>, <span class="self">self</span>.<span class="ident">y</span>, <span class="ident">possible_moves</span>[<span class="ident">index</span>]);
+        <span class="macro">debug!</span>(
+            <span class="string">&quot;Shark ({}, {}) moves to {:?}&quot;</span>,
+            <span class="self">self</span>.<span class="ident">x</span>, <span class="self">self</span>.<span class="ident">y</span>, <span class="ident">possible_moves</span>[<span class="ident">index</span>]
+        );
         <span class="kw">return</span> <span class="ident">possible_moves</span>[<span class="ident">index</span>];
     }
-}</code></pre></div>
+}
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="planetensimulation" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
 </body></html>
