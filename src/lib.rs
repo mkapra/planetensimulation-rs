@@ -18,20 +18,3 @@ impl fmt::Display for SimulationError {
 }
 
 impl std::error::Error for SimulationError {}
-
-// Test
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_bla() {
-        let mut board = Board::new(10, 5, 5, 5);
-        board.generate_random_animals();
-        println!("{}", board);
-        board.step().unwrap();
-        println!("{}", board);
-
-        assert_eq!(true, true);
-    }
-}

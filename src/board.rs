@@ -141,7 +141,7 @@ impl Board {
             );
             // Set new field to fish
             self.fields[new_y as usize][new_x as usize] = Field::new(
-                FieldType::Fish,
+                FieldType::Shark,
                 new_x,
                 new_y,
             );
@@ -173,10 +173,10 @@ impl Display for Board {
         let col_numbers = (0..self.fields.first().unwrap().len() as i32)
             .map(|n| n.to_string())
             .collect::<Vec<String>>();
-        println!("  {}", col_numbers.join("  "));
+        writeln!(f, "  {}", col_numbers.join("  "))?;
 
         for (i, row) in self.fields.iter().enumerate() {
-            print!("{i} ");
+            write!(f, "{i} ")?;
             for field in row {
                 match field.r#type {
                     FieldType::Fish => write!(f, "{}, ", "F".blue()),

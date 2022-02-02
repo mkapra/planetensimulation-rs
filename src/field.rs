@@ -31,6 +31,13 @@ impl Field {
         Field { r#type, x, y }
     }
 
+    /// Removes a new position for its field
+    ///
+    /// # Arguments
+    /// * `animals` - The board before the step
+    ///
+    /// # Returns
+    /// The new position for the field
     pub fn step(&self, animals: &Vec<Vec<Field>>) -> Position {
         match self.r#type {
             FieldType::Fish => self.get_next_fish_position(animals),
@@ -69,6 +76,10 @@ impl Field {
         );
         if let FieldType::Plankton = animals[right.1 as usize][right.0 as usize].r#type {
             possible_moves.push(right);
+        }
+
+        if possible_moves.is_empty() {
+            return (self.x, self.y);
         }
 
         // Select random move
@@ -137,6 +148,10 @@ impl Field {
                 self.x, self.y, prioritized_moves[index]
             );
             return prioritized_moves[index];
+        }
+
+        if possible_moves.is_empty() {
+            return (self.x, self.y);
         }
 
         // select a random move from possible_moves
