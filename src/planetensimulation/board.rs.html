@@ -185,6 +185,7 @@
 <span id="184">184</span>
 <span id="185">185</span>
 <span id="186">186</span>
+<span id="187">187</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Contains the board struct. A board contains all the necessary information and controls the simulation.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
@@ -312,7 +313,8 @@
                     <span class="ident">Field::new</span>(<span class="ident">FieldType::Plankton</span>, <span class="ident">old_x</span>, <span class="ident">old_y</span>, <span class="prelude-val">None</span>);
             }
             <span class="comment">// Set new field to fish</span>
-            <span class="self">self</span>.<span class="ident">fields</span>[<span class="ident">new_y</span> <span class="kw">as</span> <span class="ident">usize</span>][<span class="ident">new_x</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">Field::new</span>(<span class="ident">FieldType::Fish</span>, <span class="ident">new_x</span>, <span class="ident">new_y</span>, <span class="ident">status</span>);
+            <span class="self">self</span>.<span class="ident">fields</span>[<span class="ident">new_y</span> <span class="kw">as</span> <span class="ident">usize</span>][<span class="ident">new_x</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span>
+                <span class="ident">Field::new</span>(<span class="ident">FieldType::Fish</span>, <span class="ident">new_x</span>, <span class="ident">new_y</span>, <span class="ident">status</span>);
         }
 
         <span class="macro">debug!</span>(<span class="string">&quot;After fish moves:\n{}&quot;</span>, <span class="self">self</span>);
