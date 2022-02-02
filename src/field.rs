@@ -5,6 +5,7 @@ use rand::Rng;
 use std::fmt;
 
 type Position = (u32, u32);
+type NeighbourFields = (Position, Position, Position, Position);
 
 const MAX_SHARK_LIFETIME: u32 = 8;
 const SHARK_BREED_TIME: u32 = 8;
@@ -142,6 +143,27 @@ impl Field {
         }
     }
 
+    fn get_positions_around(&self, animals: &[Vec<Field>]) -> NeighbourFields {
+        let up = (
+            self.x % (animals.first().unwrap().len() as u32),
+            ((self.y + (animals.len() as u32) - 1) % (animals.len() as u32)),
+        );
+        let down = (
+            self.x % (animals.first().unwrap().len() as u32),
+            ((self.y + (animals.len() as u32) + 1) % (animals.len() as u32)),
+        );
+        let left = (
+            ((self.x + (animals.first().unwrap().len() as u32) - 1) % (animals.len() as u32)),
+            self.y % (animals.len() as u32),
+        );
+        let right = (
+            ((self.x + (animals.first().unwrap().len() as u32) + 1) % (animals.len() as u32)),
+            self.y % (animals.len() as u32),
+        );
+
+        (up, down, left, right)
+    }
+
     fn get_next_fish_position(&self, animals: &[Vec<Field>]) -> (Position, Option<AnimalStatus>) {
         let mut new_status = self.status.clone().unwrap();
         if new_status.has_to_breed() {
@@ -150,31 +172,16 @@ impl Field {
 
         let mut possible_moves: Vec<Position> = vec![];
 
-        let up = (
-            self.x % (animals.first().unwrap().len() as u32),
-            ((self.y + (animals.len() as u32) - 1) % (animals.len() as u32)),
-        );
+        let (up, down, left, right) = self.get_positions_around(animals);
         if animals[up.1 as usize][up.0 as usize].check_field_empty() {
             possible_moves.push(up);
         }
-        let down = (
-            self.x % (animals.first().unwrap().len() as u32),
-            ((self.y + (animals.len() as u32) + 1) % (animals.len() as u32)),
-        );
         if animals[down.1 as usize][down.0 as usize].check_field_empty() {
             possible_moves.push(down);
         }
-        let left = (
-            ((self.x + (animals.first().unwrap().len() as u32) - 1) % (animals.len() as u32)),
-            self.y % (animals.len() as u32),
-        );
         if animals[left.1 as usize][left.0 as usize].check_field_empty() {
             possible_moves.push(left);
         }
-        let right = (
-            ((self.x + (animals.first().unwrap().len() as u32) + 1) % (animals.len() as u32)),
-            self.y % (animals.len() as u32),
-        );
         if animals[right.1 as usize][right.0 as usize].check_field_empty() {
             possible_moves.push(right);
         }
@@ -212,23 +219,7 @@ impl Field {
 
         let mut prioritized_moves: Vec<Position> = vec![];
         let mut possible_moves: Vec<Position> = vec![];
-
-        let up = (
-            self.x % (animals.first().unwrap().len() as u32),
-            ((self.y + (animals.len() as u32) - 1) % (animals.len() as u32)),
-        );
-        let down = (
-            self.x % (animals.first().unwrap().len() as u32),
-            ((self.y + (animals.len() as u32) + 1) % (animals.len() as u32)),
-        );
-        let left = (
-            ((self.x + (animals.first().unwrap().len() as u32) - 1) % (animals.len() as u32)),
-            self.y % (animals.len() as u32),
-        );
-        let right = (
-            ((self.x + (animals.first().unwrap().len() as u32) + 1) % (animals.len() as u32)),
-            self.y % (animals.len() as u32),
-        );
+        let (up, down, left, right) = self.get_positions_around(animals);
 
         // Check if there is a fish in the neighbour fields
         if animals[up.1 as usize][up.0 as usize].check_field_for_type(FieldType::Fish) {
@@ -316,5 +307,62 @@ impl fmt::Display for Field {
             FieldType::Fish => write!(f, "{}", "F".green()),
             FieldType::Shark => write!(f, "{}", "S".red()),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    fn create_empty_board() -> Vec<Vec<Field>> {
+        let mut board: Vec<Vec<Field>> = vec![];
+        for y in 0..4 {
+            let mut row: Vec<Field> = vec![];
+            for x in 0..4 {
+                row.push(Field::new(FieldType::Plankton, x, y, None));
+            }
+            board.push(row);
+        }
+        board
+    }
+
+    #[test]
+    fn test_fish_in_middle() {
+        let mut board = create_empty_board();
+        let fish = Field::new(FieldType::Fish, 2, 2, None);
+        board[2][2] = fish.clone();
+
+        let possible_moves = fish.get_positions_around(&board);
+        let expected_moves: NeighbourFields = ((2, 1), (2, 3), (1, 2), (3, 2));
+        assert_eq!(expected_moves, possible_moves);
+    }
+
+    #[test]
+    fn test_fish_in_corners() {
+        let mut board = create_empty_board();
+        let upper_left = Field::new(FieldType::Fish, 0, 0, None);
+        let upper_right = Field::new(FieldType::Fish, 3, 0, None);
+        let lower_left = Field::new(FieldType::Fish, 0, 3, None);
+        let lower_right = Field::new(FieldType::Fish, 3, 3, None);
+        board[0][0] = upper_left.clone();
+        board[3][0] = upper_right.clone();
+        board[0][3] = lower_left.clone();
+        board[3][3] = lower_right.clone();
+
+        let possible_moves_upper_left = upper_left.get_positions_around(&board);
+        let expected_moves: NeighbourFields = ((0, 3), (0, 1), (3, 0), (1, 0));
+        assert_eq!(expected_moves, possible_moves_upper_left);
+
+        let possible_moves_upper_right = upper_right.get_positions_around(&board);
+        let expected_moves: NeighbourFields = ((3, 3), (3, 1), (2, 0), (0, 0));
+        assert_eq!(expected_moves, possible_moves_upper_right);
+
+        let possible_moves_lower_left = lower_left.get_positions_around(&board);
+        let expected_moves: NeighbourFields = ((0, 2), (0, 0), (3, 3), (1, 3));
+        assert_eq!(expected_moves, possible_moves_lower_left);
+
+        let possible_moves_lower_right = lower_right.get_positions_around(&board);
+        let expected_moves: NeighbourFields = ((3, 2), (3, 0), (2, 3), (0, 3));
+        assert_eq!(expected_moves, possible_moves_lower_right);
     }
 }
