@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Board","Holds all the fields and information of the simulation"],["SimulationError","An error that can occur during the simulation"]],"type":[["Result","Result type that is used by the library"]]});

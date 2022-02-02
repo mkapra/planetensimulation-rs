@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["planetensimulation"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.58.1/std/error/trait.Error.html\" title=\"trait std::error::Error\">Error</a> for <a class=\"struct\" href=\"planetensimulation/struct.SimulationError.html\" title=\"struct planetensimulation::SimulationError\">SimulationError</a>","synthetic":false,"types":["planetensimulation::SimulationError"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

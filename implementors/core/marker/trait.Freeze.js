@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["planetensimulation"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"planetensimulation/struct.Board.html\" title=\"struct planetensimulation::Board\">Board</a>","synthetic":true,"types":["planetensimulation::board::Board"]},{"text":"impl Freeze for <a class=\"struct\" href=\"planetensimulation/struct.SimulationError.html\" title=\"struct planetensimulation::SimulationError\">SimulationError</a>","synthetic":true,"types":["planetensimulation::SimulationError"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
