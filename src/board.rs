@@ -9,7 +9,6 @@
 //! board.generate_random_animals();
 //! //board.draw();
 //! ```
-use colored::Colorize;
 use log::debug;
 use rand::Rng;
 
@@ -63,7 +62,7 @@ impl Board {
         for y in 0..self.rows {
             let mut animals_row = Vec::with_capacity(self.columns as usize);
             for x in 0..self.columns {
-                animals_row.push(Field::new(FieldType::Plankton, x, y));
+                animals_row.push(Field::new(FieldType::Plankton, x, y, None));
             }
             animals.push(animals_row)
         }
@@ -78,7 +77,7 @@ impl Board {
                 random_y = rand_gen.gen_range(0..animals.len());
             }
             animals[random_y][random_x] =
-                Field::new(FieldType::Fish, random_x as u32, random_y as u32);
+                Field::new(FieldType::Fish, random_x as u32, random_y as u32, None);
         }
         // Randomly insert sharks into the empty field
         for _ in 0..self.amount_sharks {
@@ -91,11 +90,11 @@ impl Board {
             }
 
             animals[random_row][random_col] =
-                Field::new(FieldType::Shark, random_col as u32, random_row as u32);
+                Field::new(FieldType::Shark, random_col as u32, random_row as u32, None);
         }
 
-        debug!("Animals: {:?}", animals);
         self.fields = animals;
+        debug!("Initial state:\n{}", self);
     }
 
     /// Simulates one step of the simulation
@@ -115,25 +114,42 @@ impl Board {
 
         for fish in fishes {
             let (old_x, old_y) = (fish.x, fish.y);
-            let (new_x, new_y) = fish.step(&self.fields);
+            let ((new_x, new_y), status) = fish.step(&self.fields).unwrap();
 
-            // Set old field to plankton
-            self.fields[old_y as usize][old_x as usize] =
-                Field::new(FieldType::Plankton, old_x, old_y);
+            if status.as_ref().unwrap().has_to_breed() {
+                self.fields[old_y as usize][old_x as usize] =
+                    Field::new(FieldType::Fish, old_x, old_y, None);
+            } else {
+                // Set old field to plankton
+                self.fields[old_y as usize][old_x as usize] =
+                    Field::new(FieldType::Plankton, old_x, old_y, None);
+            }
             // Set new field to fish
-            self.fields[new_y as usize][new_x as usize] = Field::new(FieldType::Fish, new_x, new_y);
+            self.fields[new_y as usize][new_x as usize] = Field::new(FieldType::Fish, new_x, new_y, status);
         }
+
+        debug!("After fish moves:\n{}", self);
 
         for shark in sharks {
             let (old_x, old_y) = (shark.x, shark.y);
-            let (new_x, new_y) = shark.step(&self.fields);
+            if let Some(((new_x, new_y), status)) = shark.step(&self.fields) {
+                if status.as_ref().unwrap().has_to_breed() {
+                    self.fields[old_y as usize][old_x as usize] =
+                        Field::new(FieldType::Shark, old_x, old_y, None);
+                } else {
+                    // Set old field to plankton
+                    self.fields[old_y as usize][old_x as usize] =
+                        Field::new(FieldType::Plankton, old_x, old_y, None);
+                }
 
-            // Set old field to plankton
-            self.fields[old_y as usize][old_x as usize] =
-                Field::new(FieldType::Plankton, old_x, old_y);
-            // Set new field to fish
-            self.fields[new_y as usize][new_x as usize] =
-                Field::new(FieldType::Shark, new_x, new_y);
+                // Set new field to shark
+                self.fields[new_y as usize][new_x as usize] =
+                    Field::new(FieldType::Shark, new_x, new_y, status);
+            } else {
+                // Set old field to plankton
+                self.fields[old_y as usize][old_x as usize] =
+                    Field::new(FieldType::Plankton, old_x, old_y, None);
+            }
         }
 
         Ok(())
@@ -159,19 +175,9 @@ impl Board {
 use std::fmt::{Display, Formatter, Result as FmtResult};
 impl Display for Board {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        let col_numbers = (0..self.fields.first().unwrap().len() as i32)
-            .map(|n| n.to_string())
-            .collect::<Vec<String>>();
-        writeln!(f, "  {}", col_numbers.join("  "))?;
-
-        for (i, row) in self.fields.iter().enumerate() {
-            write!(f, "{i} ")?;
+        for row in self.fields.iter() {
             for field in row {
-                match field.r#type {
-                    FieldType::Fish => write!(f, "{}, ", "F".blue()),
-                    FieldType::Shark => write!(f, "{}, ", "S".red()),
-                    FieldType::Plankton => write!(f, "_, "),
-                }?;
+                write!(f, "{}, ", field)?;
             }
             write!(f, "\n")?;
         }

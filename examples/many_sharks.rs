@@ -1,7 +1,12 @@
+use std::io::Write;
 use planetensimulation::Board;
 
 fn main() {
-    let mut board = Board::new(10, 5, 5, 5);
+    env_logger::builder()
+        .format(|buf, record| writeln!(buf, "{}: {}", record.level(), record.args()))
+        .init();
+
+    let mut board = Board::new(4, 2, 5, 5);
     board.generate_random_animals();
 
     loop {
