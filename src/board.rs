@@ -171,6 +171,22 @@ impl Board {
             .filter(|field| field.r#type == FieldType::Shark)
             .collect()
     }
+
+    /// Count the animals that are currently on the board
+    pub fn count_animals(&self) -> (u32, u32) {
+        let mut fishes = 0;
+        let mut sharks = 0;
+        for row in self.fields.iter() {
+            for field in row.iter() {
+                match field.r#type {
+                    FieldType::Fish => fishes += 1,
+                    FieldType::Shark => sharks += 1,
+                    _ => (),
+                }
+            }
+        }
+        (fishes, sharks)
+    }
 }
 
 use std::fmt::{Display, Formatter, Result as FmtResult};
