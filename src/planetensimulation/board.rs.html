@@ -186,6 +186,22 @@
 <span id="185">185</span>
 <span id="186">186</span>
 <span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Contains the board struct. A board contains all the necessary information and controls the simulation.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
@@ -358,6 +374,22 @@
             .<span class="ident">flatten</span>()
             .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">field</span><span class="op">|</span> <span class="ident">field</span>.<span class="ident">r#type</span> <span class="op">==</span> <span class="ident">FieldType::Shark</span>)
             .<span class="ident">collect</span>()
+    }
+
+    <span class="doccomment">/// Count the animals that are currently on the board</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">count_animals</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">u32</span>, <span class="ident">u32</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fishes</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sharks</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">for</span> <span class="ident">row</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">fields</span>.<span class="ident">iter</span>() {
+            <span class="kw">for</span> <span class="ident">field</span> <span class="kw">in</span> <span class="ident">row</span>.<span class="ident">iter</span>() {
+                <span class="kw">match</span> <span class="ident">field</span>.<span class="ident">r#type</span> {
+                    <span class="ident">FieldType::Fish</span> =&gt; <span class="ident">fishes</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>,
+                    <span class="ident">FieldType::Shark</span> =&gt; <span class="ident">sharks</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>,
+                    <span class="kw">_</span> =&gt; (),
+                }
+            }
+        }
+        (<span class="ident">fishes</span>, <span class="ident">sharks</span>)
     }
 }
 
