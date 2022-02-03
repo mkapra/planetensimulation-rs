@@ -106,7 +106,7 @@ impl Board {
         let fishes = Self::get_fishes(&cloned_fields);
         let sharks = Self::get_sharks(&cloned_fields);
 
-        if fishes.len() == 0 || sharks.len() == 0 {
+        if fishes.is_empty() || sharks.is_empty() {
             return Err(SimulationError(
                 "No fishes or sharks left on the board".into(),
             ));
@@ -196,7 +196,7 @@ impl Display for Board {
             for field in row {
                 write!(f, "{}, ", field)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }

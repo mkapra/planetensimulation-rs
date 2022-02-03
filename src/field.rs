@@ -44,7 +44,7 @@ impl AnimalStatus {
     }
 
     fn reset_life(&mut self) {
-        if let Some(_) = self.life {
+        if self.life.is_some() {
             self.life = Some(MAX_SHARK_LIFETIME)
         }
     }
@@ -133,7 +133,7 @@ impl Field {
     ///
     /// # Returns
     /// The new position for the field
-    pub fn step(&self, animals: &Vec<Vec<Field>>) -> Option<(Position, Option<AnimalStatus>)> {
+    pub fn step(&self, animals: &[Vec<Field>]) -> Option<(Position, Option<AnimalStatus>)> {
         match self.r#type {
             FieldType::Fish => Some(self.get_next_fish_position(animals)),
             FieldType::Shark => self
